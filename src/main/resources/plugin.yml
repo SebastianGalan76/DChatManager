@@ -1,0 +1,5 @@
+name: DChatManager
+version: '${project.version}'
+main: pl.dream.dchatmanager.DChatManager
+api-version: '1.20'
+authors: [DreaMPL]
