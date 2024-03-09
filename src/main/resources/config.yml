@@ -1,0 +1,11 @@
+chat:
+  enabled: true
+antiSpam:
+  enabled: true
+  cooldown: 3
+antiFlood:
+  enabled: true
+antiCaps:
+  enabled: true
+antiSwearing:
+  enabled: true
