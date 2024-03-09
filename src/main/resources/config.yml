@@ -11,3 +11,19 @@ antiCaps:
   enabled: true
 antiSwearing:
   enabled: true
+
+autoMessage:
+  interval: 5
+  messages:
+    0:
+      enable: true
+      sound:
+        name: 'AMBIENT_NETHER_WASTES_LOOP'
+        volume: 0.5
+        pitch: 0.5
+      messages:
+        - ""
+        - "sssgggaw"
+        - ""
+      commands:
+        - "bc elo melo"

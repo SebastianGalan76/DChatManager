@@ -1,4 +1,4 @@
-package pl.dream.dchatmanager.data;
+package pl.dream.dchatmanager.data.feature;
 
 import org.jetbrains.annotations.NotNull;
 import pl.dream.dchatmanager.DChatManager;

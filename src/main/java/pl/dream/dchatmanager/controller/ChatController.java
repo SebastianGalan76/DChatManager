@@ -2,10 +2,10 @@ package pl.dream.dchatmanager.controller;
 
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Nullable;
-import pl.dream.dchatmanager.data.AntiCaps;
-import pl.dream.dchatmanager.data.AntiSpam;
-import pl.dream.dchatmanager.data.AntiSwearing;
-import pl.dream.dchatmanager.data.ChatFeature;
+import pl.dream.dchatmanager.data.feature.AntiCaps;
+import pl.dream.dchatmanager.data.feature.AntiSpam;
+import pl.dream.dchatmanager.data.feature.AntiSwearing;
+import pl.dream.dchatmanager.data.feature.ChatFeature;
 
 import java.util.HashMap;
 import java.util.UUID;

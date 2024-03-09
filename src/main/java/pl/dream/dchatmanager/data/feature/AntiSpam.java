@@ -1,4 +1,4 @@
-package pl.dream.dchatmanager.data;
+package pl.dream.dchatmanager.data.feature;
 
 public class AntiSpam extends ChatFeature {
 
