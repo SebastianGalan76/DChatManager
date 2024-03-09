@@ -5,6 +5,8 @@ antiSpam:
   cooldown: 3
 antiFlood:
   enabled: true
+  minMessageLength: 20
+  maxCapsPercent: 50
 antiCaps:
   enabled: true
 antiSwearing:

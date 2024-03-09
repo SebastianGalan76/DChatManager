@@ -2,13 +2,13 @@ package pl.dream.dchatmanager.data;
 
 public class AntiSpam extends ChatFeature {
 
-    //Cooldown in seconds * 20 ticks
+    //Cooldown in milliseconds
     private final int cooldown;
 
     public AntiSpam(boolean enabled, int cooldown) {
         super(enabled);
 
-        this.cooldown = cooldown * 20;
+        this.cooldown = cooldown * 1000;
     }
 
     public int getCooldown(){

@@ -5,6 +5,8 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 import pl.dream.dchatmanager.DChatManager;
+import pl.dream.dchatmanager.data.AntiCaps;
+import pl.dream.dchatmanager.data.AntiFlood;
 import pl.dream.dchatmanager.data.AntiSpam;
 import pl.dream.dchatmanager.data.AntiSwearing;
 import pl.dream.dchatmanager.data.ChatFeature;
@@ -74,8 +76,10 @@ public class ConfigController {
     }
     private void loadAntiCaps(ChatController controller){
         boolean enabled = config.getBoolean("antiCaps.enabled", false);
+        int minMessageLength = config.getInt("antiCaps.minMessageLength", 20);
+        int maxCapsPercent = config.getInt("antiCaps.maxCapsPercent", 50);
 
-        controller.antiCaps = new ChatFeature(enabled);
+        controller.antiCaps = new AntiCaps(enabled, minMessageLength, maxCapsPercent);
     }
     private void loadAntiSpam(ChatController controller){
         boolean enabled = config.getBoolean("antiSpam.enabled", false);
