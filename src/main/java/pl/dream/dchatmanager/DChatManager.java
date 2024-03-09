@@ -2,6 +2,7 @@ package pl.dream.dchatmanager;
 
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
+import pl.dream.dchatmanager.command.ChatCommand;
 import pl.dream.dchatmanager.controller.ConfigController;
 import pl.dream.dchatmanager.listener.PlayerQuitListener;
 import pl.dream.dchatmanager.listener.SendMessageListener;
@@ -21,6 +22,8 @@ public final class DChatManager extends JavaPlugin {
         plugin = this;
         playerCooldownList = new HashMap<>();
 
+        getCommand("chat").setExecutor(new ChatCommand());
+
         getServer().getPluginManager().registerEvents(new SendMessageListener(), this);
         getServer().getPluginManager().registerEvents(new PlayerQuitListener(), this);
 
@@ -32,10 +35,18 @@ public final class DChatManager extends JavaPlugin {
         // Plugin shutdown logic
     }
 
-    public void loadPlugin(){
+    public void reloadPlugin(){
+        reloadConfig();
+
+        loadPlugin();
+    }
+
+    private void loadPlugin(){
+        saveDefaultConfig();
         configController = new ConfigController(getConfig());
         Locale.loadMessages(this);
     }
+
 
     public static @NotNull DChatManager getPlugin(){
         return plugin;

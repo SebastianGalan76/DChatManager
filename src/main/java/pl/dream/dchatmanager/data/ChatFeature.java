@@ -1,7 +1,7 @@
 package pl.dream.dchatmanager.data;
 
 public class ChatFeature {
-    private final boolean enabled;
+    private boolean enabled;
 
     public ChatFeature(boolean enabled){
         this.enabled = enabled;
@@ -9,5 +9,8 @@ public class ChatFeature {
 
     public boolean isEnabled(){
         return enabled;
+    }
+    public void enable(boolean value){
+        enabled = value;
     }
 }

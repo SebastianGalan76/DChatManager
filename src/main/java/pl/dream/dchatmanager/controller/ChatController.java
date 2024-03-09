@@ -38,11 +38,11 @@ public class ChatController {
         blockedMessages.put(sender.getUniqueId(), formattedMessage);
     }
 
-    public @Nullable String getBlockedMessages(Player sender){
+    public @Nullable String getBlockedMessages(UUID senderUUID){
         if(blockedMessages==null){
             return null;
         }
 
-        return blockedMessages.remove(sender.getUniqueId());
+        return blockedMessages.remove(senderUUID);
     }
 }
