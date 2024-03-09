@@ -3,6 +3,7 @@ package pl.dream.dchatmanager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 import pl.dream.dchatmanager.controller.ConfigController;
+import pl.dream.dchatmanager.listener.PlayerQuitListener;
 import pl.dream.dchatmanager.listener.SendMessageListener;
 
 import java.util.HashMap;
@@ -21,6 +22,7 @@ public final class DChatManager extends JavaPlugin {
         playerCooldownList = new HashMap<>();
 
         getServer().getPluginManager().registerEvents(new SendMessageListener(), this);
+        getServer().getPluginManager().registerEvents(new PlayerQuitListener(), this);
 
         loadPlugin();
     }
