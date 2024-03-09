@@ -4,6 +4,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 import pl.dream.dchatmanager.command.ChatCommand;
 import pl.dream.dchatmanager.command.ChatTabCompleter;
+import pl.dream.dchatmanager.controller.AutoMessageController;
 import pl.dream.dchatmanager.controller.ConfigController;
 import pl.dream.dchatmanager.listener.PlayerQuitListener;
 import pl.dream.dchatmanager.listener.SendMessageListener;
@@ -15,6 +16,8 @@ public final class DChatManager extends JavaPlugin {
     private static DChatManager plugin;
 
     public ConfigController configController;
+    public AutoMessageController autoMessageController;
+
     public HashMap<UUID, Long> playerCooldownList;
 
 
@@ -28,6 +31,8 @@ public final class DChatManager extends JavaPlugin {
 
         getServer().getPluginManager().registerEvents(new SendMessageListener(), this);
         getServer().getPluginManager().registerEvents(new PlayerQuitListener(), this);
+
+        autoMessageController = new AutoMessageController();
 
         loadPlugin();
     }
@@ -45,8 +50,9 @@ public final class DChatManager extends JavaPlugin {
 
     private void loadPlugin(){
         saveDefaultConfig();
-        configController = new ConfigController(getConfig());
         Locale.loadMessages(this);
+
+        configController = new ConfigController(getConfig());
     }
 
 

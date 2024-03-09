@@ -1,4 +1,4 @@
-package pl.dream.dchatmanager.data;
+package pl.dream.dchatmanager.data.feature;
 
 public class AntiCaps extends ChatFeature{
     private final int minMessageLength;

@@ -1,15 +1,17 @@
 package pl.dream.dchatmanager.controller;
 
+import org.bukkit.Sound;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 import pl.dream.dchatmanager.DChatManager;
-import pl.dream.dchatmanager.data.AntiCaps;
-import pl.dream.dchatmanager.data.AntiFlood;
-import pl.dream.dchatmanager.data.AntiSpam;
-import pl.dream.dchatmanager.data.AntiSwearing;
-import pl.dream.dchatmanager.data.ChatFeature;
+import pl.dream.dchatmanager.data.AutoMessage;
+import pl.dream.dchatmanager.data.feature.AntiCaps;
+import pl.dream.dchatmanager.data.feature.AntiSpam;
+import pl.dream.dchatmanager.data.feature.AntiSwearing;
+import pl.dream.dchatmanager.data.feature.ChatFeature;
+import pl.dream.dreamlib.Color;
 
 import java.io.File;
 import java.io.IOException;
@@ -28,6 +30,7 @@ public class ConfigController {
         DChatManager.getPlugin().saveDefaultConfig();
 
         loadFeatures();
+        loadAutoMessages();
     }
 
     public void reloadBlockedWord(){
@@ -120,5 +123,46 @@ public class ConfigController {
         }
 
         return blockedWords;
+    }
+
+    private void loadAutoMessages(){
+        if(config.get("autoMessage")==null || config.getConfigurationSection("autoMessage.messages")==null){
+            return;
+        }
+
+        long interval = config.getLong("autoMessage.interval", 60);
+        interval = interval * 20;
+
+        List<AutoMessage> autoMessageList = new ArrayList<>();
+        for(String path:config.getConfigurationSection("autoMessage.messages").getKeys(false)){
+            if(!config.getBoolean("autoMessage.messages."+path+".enable", true)){
+                continue;
+            }
+
+            List<String> messages = Color.fixRGB(config.getStringList("autoMessage.messages."+path+".messages"));
+            List<String> commands = Color.fixRGB(config.getStringList("autoMessage.messages."+path+".commands"));
+            AutoMessage.Sound sound;
+
+            if(config.get("autoMessage.messages."+path+".sound")!=null){
+                sound = new AutoMessage.Sound();
+
+                try{
+                    sound.sound = Sound.valueOf(config.getString("autoMessage.messages."+path+".sound.name"));
+                }
+                catch (IllegalArgumentException e){
+                    sound = null;
+                    e.printStackTrace();
+                }
+
+                if(sound!=null){
+                    sound.volume = (float)config.getDouble("autoMessage.messages."+path+".sound.volume", 0.5);
+                    sound.pitch = (float)config.getDouble("autoMessage.messages."+path+".sound.pitch", 0.5);
+                }
+
+                autoMessageList.add(new AutoMessage(messages, commands, sound));
+            }
+        }
+
+        DChatManager.getPlugin().autoMessageController.loadController(autoMessageList.toArray(new AutoMessage[0]), interval);
     }
 }
