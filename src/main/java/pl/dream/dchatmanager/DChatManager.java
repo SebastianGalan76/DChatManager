@@ -7,7 +7,7 @@ public final class DChatManager extends JavaPlugin {
     @Override
     public void onEnable() {
         // Plugin startup logic
-
+        
     }
 
     @Override
