@@ -34,6 +34,7 @@ public final class DChatManager extends JavaPlugin {
 
     public void loadPlugin(){
         configController = new ConfigController(getConfig());
+        Locale.loadMessages(this);
     }
 
     public static @NotNull DChatManager getPlugin(){

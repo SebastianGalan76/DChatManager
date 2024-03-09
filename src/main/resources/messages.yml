@@ -1,0 +1,39 @@
+aliases:
+  redColor: "&#EF2D2D"
+  greenColor: "&#67EF2D"
+  blueColor: "&#2C71E8"
+noPermission: " &8❖ {redColor}Nie masz uprawnień, aby to zrobić!"
+cooldownMessage: " &8❖ {redColor}Piszesz zbyt szybko! Poczekaj chwilę, zanim wyślesz następną wiadomość!"
+clickToShowBlockedMessage: "&cWiadomość niewidoczna dla graczy! &7Kliknij, aby ją pokazać! Zablokowany wyraz: &c{BLOCKED_WORD}"
+chat:
+  help:
+    - "/chat on"
+    - "/chat off"
+    - "/chat clear"
+    - "/chat blockedWords add [fraza]"
+    - "/chat blockedWords remove [fraza]"
+  clear:
+    notification:
+      - ""
+      - " {blueColor}Chat został wyczyszczony przez &c{PLAYER}{blueColor}!"
+      - ""
+  'off':
+    notification:
+      - ""
+      - " {redColor}Chat został wyłączony przez &c{PLAYER}{redColor}!"
+      - ""
+    alreadyOff: "&8❖ &cCzat jest obecnie wyłączony!"
+    noPermission: "&8❖ {redColor}Czat jest obecnie wyłączony!"
+  'on':
+    notification:
+      - ""
+      - " {greenColor}Chat został włączony przez &c{PLAYER}{greenColor}!"
+      - ""
+    alreadyOn: "&cCzat jest obecnie włączony!"
+  blockedWords:
+    add:
+      correct: "&aDodano nową frazę do zablokowanych!"
+      incorrect: "&cWpisana fraza powinna być już zablokowana!"
+    remove:
+      correct: "&aUsunięto zablokowaną frazę!"
+      incorrect: "&cWpisana fraza nie jest zablokowana!"
