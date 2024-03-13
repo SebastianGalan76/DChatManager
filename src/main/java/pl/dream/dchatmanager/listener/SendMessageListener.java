@@ -10,9 +10,11 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import pl.dream.dchatmanager.DChatManager;
+import pl.dream.dchatmanager.Locale;
 import pl.dream.dchatmanager.controller.ChatController;
 import pl.dream.dchatmanager.controller.Tokenizer;
 import pl.dream.dreamlib.Color;
+import pl.dream.dreamlib.Message;
 
 import java.util.Calendar;
 
@@ -34,11 +36,11 @@ public class SendMessageListener implements Listener {
         Player player = e.getPlayer();
         ChatController controller = ChatController.getInstance();
 
-        //Check if the chat is turned on
+        //Check if the chat is turned off
         if(!controller.chat.isEnabled()){
             if(!player.hasPermission("dchatmanager.chat.off.bypass")){
                 e.setCancelled(true);
-                //TODO Send the appropriate message
+                Message.sendMessage(player, Locale.CHAT_OFF_NO_PERMISSION.toString());
 
                 return;
             }
@@ -51,7 +53,7 @@ public class SendMessageListener implements Listener {
 
                 if(calendar.getTimeInMillis() - lastTimeSendMessage < controller.antiSpam.getCooldown()){
                     e.setCancelled(true);
-                    //TODO Send the appropriate message
+                    Message.sendMessage(player, Locale.COOLDOWN_MESSAGE.toString());
 
                     return;
                 }
@@ -122,8 +124,6 @@ public class SendMessageListener implements Listener {
                         //Convert sent message to lower case
                         message = result.toString();
                         e.setMessage(message);
-
-                        //TODO Send the appropriate message
                     }
                 }
             }
@@ -133,8 +133,7 @@ public class SendMessageListener implements Listener {
     private void sendNotificationToAdmin(Player sender, String formattedMessage, String blockedWord){
         TextComponent messageComponent = new TextComponent(Color.fix("&c&l[!] " + formattedMessage));
         messageComponent.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/chat sbm "+sender.getUniqueId().toString()));
-        //TODO Send the appropriate message
-        messageComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("Blocked word: {BLOCKED_WORD}"
+        messageComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(Locale.CLICK_TO_SHOW_BLOCKED_MESSAGE.toString()
                 .replace("{BLOCKED_WORD}", blockedWord))));
 
         for(Player player: Bukkit.getOnlinePlayers()){

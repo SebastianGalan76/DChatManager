@@ -5,7 +5,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 import pl.dream.dreamlib.Color;
 
-import javax.annotation.Nullable;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
@@ -113,6 +112,11 @@ public enum Locale {
         }
 
         return text;
+    }
+
+    @Override
+    public String toString(){
+        return getText();
     }
 
     private String getPath() {
