@@ -17,13 +17,15 @@ import pl.dream.dreamlib.Color;
 import pl.dream.dreamlib.Message;
 
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.UUID;
 
 public class SendMessageListener implements Listener {
-    private final Calendar calendar;
     private final Tokenizer tokenizer;
+    public HashMap<UUID, Long> playerCooldownList;
 
     public SendMessageListener(){
-        calendar = Calendar.getInstance();
+        playerCooldownList = new HashMap<>();
         tokenizer = new Tokenizer();
     }
 
@@ -49,17 +51,20 @@ public class SendMessageListener implements Listener {
         //Check sending cooldown
         if(controller.antiSpam.isEnabled()){
             if(!player.hasPermission("dchatmanager.cooldown.bypass")){
-                long lastTimeSendMessage = DChatManager.getPlugin().playerCooldownList.get(player.getUniqueId());
+                long lastTimeSendMessage = 0;
+                if(playerCooldownList.containsKey(player.getUniqueId())){
+                    lastTimeSendMessage = playerCooldownList.get(player.getUniqueId());
+                }
 
-                if(calendar.getTimeInMillis() - lastTimeSendMessage < controller.antiSpam.getCooldown()){
+                long cooldown = Calendar.getInstance().getTimeInMillis() - lastTimeSendMessage;
+                if(cooldown < controller.antiSpam.getCooldown()){
                     e.setCancelled(true);
                     Message.sendMessage(player, Locale.COOLDOWN_MESSAGE.toString());
-
                     return;
                 }
             }
 
-            DChatManager.getPlugin().playerCooldownList.put(player.getUniqueId(), calendar.getTimeInMillis() + controller.antiSpam.getCooldown());
+            playerCooldownList.put(player.getUniqueId(), Calendar.getInstance().getTimeInMillis() + controller.antiSpam.getCooldown());
         }
 
         String message = e.getMessage();
@@ -116,6 +121,9 @@ public class SendMessageListener implements Listener {
                             }
 
                             uppercaseCount++;
+                        }
+                        else{
+                            result.append(c);
                         }
                     }
 

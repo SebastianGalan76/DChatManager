@@ -9,6 +9,6 @@ public class PlayerQuitListener implements Listener {
 
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent e){
-        DChatManager.getPlugin().playerCooldownList.remove(e.getPlayer().getUniqueId());
+        DChatManager.getPlugin().sendMessageListener.playerCooldownList.remove(e.getPlayer().getUniqueId());
     }
 }

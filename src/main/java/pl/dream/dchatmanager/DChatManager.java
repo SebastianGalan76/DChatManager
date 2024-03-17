@@ -18,18 +18,17 @@ public final class DChatManager extends JavaPlugin {
     public ConfigController configController;
     public AutoMessageController autoMessageController;
 
-    public HashMap<UUID, Long> playerCooldownList;
-
+    public SendMessageListener sendMessageListener;
 
     @Override
     public void onEnable() {
         plugin = this;
-        playerCooldownList = new HashMap<>();
 
         getCommand("chat").setExecutor(new ChatCommand());
         getCommand("chat").setTabCompleter(new ChatTabCompleter());
 
-        getServer().getPluginManager().registerEvents(new SendMessageListener(), this);
+        sendMessageListener = new SendMessageListener();
+        getServer().getPluginManager().registerEvents(sendMessageListener, this);
         getServer().getPluginManager().registerEvents(new PlayerQuitListener(), this);
 
         autoMessageController = new AutoMessageController();
