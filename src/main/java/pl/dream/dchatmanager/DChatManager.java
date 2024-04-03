@@ -5,12 +5,12 @@ import org.jetbrains.annotations.NotNull;
 import pl.dream.dchatmanager.command.ChatCommand;
 import pl.dream.dchatmanager.command.ChatTabCompleter;
 import pl.dream.dchatmanager.controller.AutoMessageController;
+import pl.dream.dchatmanager.controller.ChatController;
 import pl.dream.dchatmanager.controller.ConfigController;
 import pl.dream.dchatmanager.listener.PlayerQuitListener;
 import pl.dream.dchatmanager.listener.SendMessageListener;
 
-import java.util.HashMap;
-import java.util.UUID;
+import java.util.LinkedHashMap;
 
 public final class DChatManager extends JavaPlugin {
     private static DChatManager plugin;
@@ -27,7 +27,7 @@ public final class DChatManager extends JavaPlugin {
         getCommand("chat").setExecutor(new ChatCommand());
         getCommand("chat").setTabCompleter(new ChatTabCompleter());
 
-        sendMessageListener = new SendMessageListener();
+        sendMessageListener = new SendMessageListener(ChatController.getInstance());
         getServer().getPluginManager().registerEvents(sendMessageListener, this);
         getServer().getPluginManager().registerEvents(new PlayerQuitListener(), this);
 
@@ -51,7 +51,7 @@ public final class DChatManager extends JavaPlugin {
         saveDefaultConfig();
         Locale.loadMessages(this);
 
-        configController = new ConfigController(getConfig());
+        configController = new ConfigController(this);
     }
 
 

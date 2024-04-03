@@ -11,9 +11,15 @@ antiCaps:
   enabled: true
 antiSwearing:
   enabled: true
+format:
+  default: "&8[G]{PLAYER}&7: "
+  vip: "<&#EFB22A>[VIP]{PLAYER}</&#FDD16F>&7: "
+  svip: "<&#FB9208>[sVIP]{PLAYER}</&#FDA96F>&7: "
+  elita: "<&#3D29BE>[ELITA]{PLAYER}</&#3BDFFF>&8: &#78E9FF"
+  admin: "<&#FB0808>[Admin]{PLAYER}</&#EFB22A>&8: &c"
 
 autoMessage:
-  interval: 5
+  interval: 30
   messages:
     0:
       enable: true
@@ -22,8 +28,9 @@ autoMessage:
         volume: 0.5
         pitch: 0.5
       messages:
-        - ""
-        - "sssgggaw"
-        - ""
+        - "[]================================[]"
+        - "<center>&#acbbcasssgggaw"
+        - "X<center><&#323232>adawdwadwa</&#aaaaaa></center>X"
+        - "[]================================[]"
       commands:
         - "bc elo melo"

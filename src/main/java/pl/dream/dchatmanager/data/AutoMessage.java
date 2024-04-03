@@ -4,7 +4,9 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import pl.dream.dchatmanager.DChatManager;
+import pl.dream.dreamlib.Color;
 import pl.dream.dreamlib.Message;
+import pl.dream.dreamlib.Text;
 
 import java.util.List;
 
@@ -14,6 +16,10 @@ public class AutoMessage {
     private final Sound sound;
 
     public AutoMessage(List<String> messages, List<String> commands, Sound sound) {
+        Text.center(messages);
+        messages.replaceAll(Color::fixAll);
+        commands.replaceAll(Color::fixAll);
+
         this.messages = messages;
         this.commands = commands;
         this.sound = sound;

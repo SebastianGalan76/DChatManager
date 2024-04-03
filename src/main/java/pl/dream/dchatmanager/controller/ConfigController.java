@@ -1,9 +1,11 @@
 package pl.dream.dchatmanager.controller;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Sound;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.Debug;
 import org.jetbrains.annotations.NotNull;
 import pl.dream.dchatmanager.DChatManager;
 import pl.dream.dchatmanager.data.AutoMessage;
@@ -12,24 +14,29 @@ import pl.dream.dchatmanager.data.feature.AntiSpam;
 import pl.dream.dchatmanager.data.feature.AntiSwearing;
 import pl.dream.dchatmanager.data.feature.ChatFeature;
 import pl.dream.dreamlib.Color;
+import pl.dream.dreamlib.gradient.Gradient;
+import pl.dream.dreamlib.gradient.LinearInterpolator;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
 public class ConfigController {
-    private final FileConfiguration config;
+    private final DChatManager plugin;
+    private FileConfiguration config;
 
-    public ConfigController(FileConfiguration config){
-        this.config = config;
+    public ConfigController(DChatManager plugin){
+        this.plugin = plugin;
 
         loadConfig();
     }
 
     private void loadConfig(){
         DChatManager.getPlugin().saveDefaultConfig();
+        config = plugin.getConfig();
 
         loadFeatures();
+        loadChatFormats();
         loadAutoMessages();
     }
 
@@ -125,6 +132,18 @@ public class ConfigController {
         return blockedWords;
     }
 
+    private void loadChatFormats(){
+        LinkedHashMap<String, String> chatFormats = new LinkedHashMap<>();
+
+        for(String rank:config.getConfigurationSection("format").getKeys(false)){
+            String format = config.getString("format."+rank);
+
+            chatFormats.put(rank, format);
+        }
+
+        plugin.sendMessageListener.loadChatFormats(chatFormats);
+    }
+
     private void loadAutoMessages(){
         if(config.get("autoMessage")==null || config.getConfigurationSection("autoMessage.messages")==null){
             return;
@@ -139,8 +158,8 @@ public class ConfigController {
                 continue;
             }
 
-            List<String> messages = Color.fixRGB(config.getStringList("autoMessage.messages."+path+".messages"));
-            List<String> commands = Color.fixRGB(config.getStringList("autoMessage.messages."+path+".commands"));
+            List<String> messages = config.getStringList("autoMessage.messages."+path+".messages");
+            List<String> commands = config.getStringList("autoMessage.messages."+path+".commands");
             AutoMessage.Sound sound;
 
             if(config.get("autoMessage.messages."+path+".sound")!=null){

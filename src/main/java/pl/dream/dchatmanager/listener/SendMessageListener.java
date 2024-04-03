@@ -9,24 +9,37 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
+import org.jetbrains.annotations.Debug;
 import pl.dream.dchatmanager.DChatManager;
 import pl.dream.dchatmanager.Locale;
+import pl.dream.dchatmanager.Utils;
 import pl.dream.dchatmanager.controller.ChatController;
 import pl.dream.dchatmanager.controller.Tokenizer;
 import pl.dream.dreamlib.Color;
 import pl.dream.dreamlib.Message;
+import pl.dream.dreamlib.gradient.Gradient;
+import pl.dream.dreamlib.gradient.Interpolator;
+import pl.dream.dreamlib.gradient.LinearInterpolator;
 
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.UUID;
+import java.util.*;
 
 public class SendMessageListener implements Listener {
+    private final ChatController chatController;
     private final Tokenizer tokenizer;
+    private LinkedHashMap<String, String> chatFormats;
     public HashMap<UUID, Long> playerCooldownList;
+    private Interpolator interpolator;
 
-    public SendMessageListener(){
+    public SendMessageListener(ChatController chatController){
+        this.chatController = chatController;
+
         playerCooldownList = new HashMap<>();
         tokenizer = new Tokenizer();
+        interpolator = new LinearInterpolator();
+    }
+
+    public void loadChatFormats(LinkedHashMap<String, String> chatFormats){
+        this.chatFormats = chatFormats;
     }
 
     @EventHandler
@@ -36,10 +49,9 @@ public class SendMessageListener implements Listener {
         }
 
         Player player = e.getPlayer();
-        ChatController controller = ChatController.getInstance();
 
         //Check if the chat is turned off
-        if(!controller.chat.isEnabled()){
+        if(!chatController.chat.isEnabled()){
             if(!player.hasPermission("dchatmanager.chat.off.bypass")){
                 e.setCancelled(true);
                 Message.sendMessage(player, Locale.CHAT_OFF_NO_PERMISSION.toString());
@@ -49,7 +61,7 @@ public class SendMessageListener implements Listener {
         }
 
         //Check sending cooldown
-        if(controller.antiSpam.isEnabled()){
+        if(chatController.antiSpam.isEnabled()){
             if(!player.hasPermission("dchatmanager.cooldown.bypass")){
                 long lastTimeSendMessage = 0;
                 if(playerCooldownList.containsKey(player.getUniqueId())){
@@ -57,31 +69,47 @@ public class SendMessageListener implements Listener {
                 }
 
                 long cooldown = Calendar.getInstance().getTimeInMillis() - lastTimeSendMessage;
-                if(cooldown < controller.antiSpam.getCooldown()){
+                if(cooldown < chatController.antiSpam.getCooldown()){
                     e.setCancelled(true);
                     Message.sendMessage(player, Locale.COOLDOWN_MESSAGE.toString());
                     return;
                 }
             }
 
-            playerCooldownList.put(player.getUniqueId(), Calendar.getInstance().getTimeInMillis() + controller.antiSpam.getCooldown());
+            playerCooldownList.put(player.getUniqueId(), Calendar.getInstance().getTimeInMillis() + chatController.antiSpam.getCooldown());
         }
 
         String message = e.getMessage();
+        e.setFormat("%s%s");
+
+        String displayName = chatFormats.get(Utils.getRank(player, chatFormats.keySet()));
+        displayName = displayName.replace("{PLAYER}", player.getName());
+        displayName = Color.fixAll(displayName);
+        player.setDisplayName(displayName);
+
+        if(player.hasPermission("dchatmanager.chat.gradient")){
+            message = Gradient.fixRGB(message, interpolator);
+        }
+        if(player.hasPermission("dchatmanager.chat.rgb")){
+            message = Color.fixRGB(message);
+        }
+        else if(player.hasPermission("dchatmanager.chat.color")){
+            message = Color.fix(message);
+        }
 
         //Check if the player has sent blocked words
-        if(controller.antiSwearing.isEnabled()){
+        if(chatController.antiSwearing.isEnabled()){
             if(!player.hasPermission("dchatmanager.antiswearing.bypass")){
                 String tokenizedMessage = tokenizer.getTokenizedText(message);
 
-                for(String blockedWord:controller.antiSwearing.getBlockedWords()){
+                for(String blockedWord:chatController.antiSwearing.getBlockedWords()){
                     if(tokenizedMessage.contains(blockedWord)){
                         //Remove all recipients and only send the message to the sending player.
                         e.getRecipients().clear();
                         e.getRecipients().add(player);
 
                         String formattedMessage = String.format(e.getFormat(), player.getDisplayName(), e.getMessage());
-                        controller.addBlockedMessages(player, formattedMessage);
+                        chatController.addBlockedMessages(player, formattedMessage);
 
                         sendNotificationToAdmin(player, formattedMessage, blockedWord);
 
@@ -92,7 +120,7 @@ public class SendMessageListener implements Listener {
         }
 
         //Remove flood from sent message
-        if(controller.antiFlood.isEnabled()){
+        if(chatController.antiFlood.isEnabled()){
             if(!player.hasPermission("dchatmanager.antiflood.bypass")){
                 message = tokenizer.removeFlood(message);
                 e.setMessage(message);
@@ -100,11 +128,11 @@ public class SendMessageListener implements Listener {
         }
 
         //Check if player send message with caps lock
-        if(controller.antiCaps.isEnabled()){
+        if(chatController.antiCaps.isEnabled()){
             if(!player.hasPermission("dchatmanager.anticaps.bypass")){
                 int messageLength = message.length();
 
-                if(messageLength >= controller.antiCaps.getMinMessageLength()){
+                if(messageLength >= chatController.antiCaps.getMinMessageLength()){
                     StringBuilder result = new StringBuilder();
                     boolean isFirstLetter = true;
                     int uppercaseCount = 0;
@@ -128,7 +156,7 @@ public class SendMessageListener implements Listener {
                     }
 
                     float percentage = (float) uppercaseCount / messageLength * 100f;
-                    if(percentage>=controller.antiCaps.getMaxCapsPercent()){
+                    if(percentage>=chatController.antiCaps.getMaxCapsPercent()){
                         //Convert sent message to lower case
                         message = result.toString();
                         e.setMessage(message);
@@ -136,6 +164,8 @@ public class SendMessageListener implements Listener {
                 }
             }
         }
+
+        e.setMessage(message);
     }
 
     private void sendNotificationToAdmin(Player sender, String formattedMessage, String blockedWord){

@@ -7,6 +7,8 @@ import pl.dream.dchatmanager.controller.ChatController;
 import pl.dream.dreamlib.Color;
 import pl.dream.dreamlib.Message;
 
+import java.util.Set;
+
 public class Utils {
     public static void clearChat(CommandSender sender){
         for(Player p: Bukkit.getOnlinePlayers()){
@@ -65,5 +67,19 @@ public class Utils {
 
             Color.sendBroadcast(line);
         }
+    }
+
+    public static String getRank(Player player, Set<String> ranks){
+        String playerRank = "default";
+        for(String rank:ranks){
+            if(!player.hasPermission("group."+rank)){
+                break;
+            }
+            else{
+                playerRank = rank;
+            }
+        }
+
+        return playerRank;
     }
 }
